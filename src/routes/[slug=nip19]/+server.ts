@@ -32,13 +32,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			console.warn('[failed to parse metadata]', error, event);
 		}
 	}
-	const iterator = fetcher.allEventsIterator(
-		relays,
-		{ authors: [pubkey] },
-		{
-			since: Math.floor(Date.now() / 1000 - 24 * 60 * 60)
-		}
-	);
+	const iterator = await fetcher.fetchLatestEvents(relays, { authors: [pubkey] }, 50);
 
 	const name = metadata?.display_name
 		? metadata.display_name
@@ -61,5 +55,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			url: `https://nostter.app/${nip19.neventEncode({ id: event.id })}`
 		});
 	}
-	return new Response(feed.xml());
+	return new Response(feed.xml(), {
+		headers: {
+			'Content-Type': 'application/xml; charset=UTF-8'
+		}
+	});
 };
