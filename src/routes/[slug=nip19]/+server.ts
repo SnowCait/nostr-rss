@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			console.warn('[failed to parse metadata]', error, event);
 		}
 	}
-	const iterator = await fetcher.fetchLatestEvents(relays, { authors: [pubkey] }, 50);
+	const iterator = await fetcher.fetchLatestEvents(relays, { kinds: [1], authors: [pubkey] }, 50);
 
 	const name = metadata?.display_name
 		? metadata.display_name
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		console.log(event);
 		events.push(event);
 		feed.item({
-			title: '',
+			title: event.content.split('\n')[0],
 			description: event.content,
 			date: new Date(event.created_at * 1000),
 			url: `https://nostter.app/${nip19.neventEncode({ id: event.id })}`
