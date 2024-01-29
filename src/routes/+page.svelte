@@ -1,2 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+	import { goto } from '$app/navigation';
+
+	let npub = '';
+
+	async function navigate() {
+		console.log(npub);
+		await goto(`/${npub}`);
+	}
+</script>
+
+<h1>Nostr RSS</h1>
+
+<form on:submit|preventDefault={navigate}>
+	<input type="text" required bind:value={npub} />
+	<input type="submit" value="Search" />
+</form>
