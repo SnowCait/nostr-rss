@@ -1,0 +1,2 @@
+# nostr-rss
+Nostr RSS
