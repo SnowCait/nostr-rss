@@ -4,8 +4,7 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { nip19 } from 'nostr-tools';
 import { type Content } from 'nostr-typedef';
 import { NostrFetcher } from 'nostr-fetch';
-
-const defaultRelays = ['wss://relay.nostr.band/', 'wss://nos.lol/'];
+import { defaultRelays } from '$lib/config';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const npub = params.slug;
@@ -32,7 +31,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			console.warn('[failed to parse metadata]', error, event);
 		}
 	}
-	const iterator = await fetcher.fetchLatestEvents(relays, { kinds: [1], authors: [pubkey] }, 50);
+	const events = await fetcher.fetchLatestEvents(relays, { kinds: [1], authors: [pubkey] }, 50);
 
 	const name = metadata?.display_name
 		? metadata.display_name
@@ -44,10 +43,8 @@ export const GET: RequestHandler = async ({ params }) => {
 		site_url: `https://nostter.app/${npub}`,
 		feed_url: `https://rss.nostter.app/${npub}`
 	});
-	const events = [];
-	for await (const event of iterator) {
+	for (const event of events) {
 		console.log(event);
-		events.push(event);
 		feed.item({
 			title: event.content.split('\n')[0],
 			description: event.content,
