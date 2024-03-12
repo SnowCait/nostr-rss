@@ -31,7 +31,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			console.warn('[failed to parse metadata]', error, event);
 		}
 	}
-	const events = await fetcher.fetchLatestEvents(relays, { kinds: [1], authors: [pubkey] }, 50);
+	const events = await fetcher.fetchLatestEvents(relays, { kinds: [1], authors: [pubkey] }, 50, {
+		abortSignal: AbortSignal.timeout(1000)
+	});
 
 	const name = metadata?.display_name
 		? metadata.display_name
